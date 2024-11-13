@@ -44,7 +44,6 @@ def get_feedback(test_name, score):
         else:
             return "High anxiety. This may be significantly impacting your daily life. Seek professional help. **Seeking support is a sign of strength, not weakness.**"
 
-# Feedback logic for C-SSRS
 def get_cssrs_feedback(responses):
     if responses["Q6"] == "Yes":
         return """**High Risk (Behavior)**: Your responses show recent actions or preparations toward ending your life. 
@@ -65,153 +64,102 @@ def get_cssrs_feedback(responses):
     If you ever feel overwhelmed, don’t hesitate to seek support from friends, family, or a mental health professional. 
     **Seeking support is a sign of strength, not weakness.**"""
 
-# PHQ-9 Test Page
+# Test pages with forms to submit
 def phq9_page():
     st.title("PHQ-9: Depression Assessment")
-    st.write("Answer the following questions based on how you've felt over the past 2 weeks.")
-    
-    scores = []
-    questions = [
-        "Little interest or pleasure in doing things.",
-        "Feeling down, depressed, or hopeless.",
-        "Trouble falling or staying asleep, or sleeping too much.",
-        "Feeling tired or having little energy.",
-        "Poor appetite or overeating.",
-        "Feeling bad about yourself — or that you are a failure or have let yourself or your family down.",
-        "Trouble concentrating on things, such as reading or watching television.",
-        "Moving or speaking slowly, or being fidgety or restless.",
-        "Thoughts of being better off dead or self-harm."
-    ]
-    
-    for question in questions:
-        scores.append(st.radio(question, ["Not at all", "Several days", "More than half the days", "Nearly every day"], index=0))
-    
-    if st.button("Next"):
-        numeric_scores = [scores.index(choice) for choice in scores]
-        store_results("PHQ-9", sum(numeric_scores))
+    with st.form("PHQ-9"):
+        scores = []
+        questions = [
+            "Little interest or pleasure in doing things.",
+            "Feeling down, depressed, or hopeless.",
+            "Trouble falling or staying asleep, or sleeping too much.",
+            "Feeling tired or having little energy.",
+            "Poor appetite or overeating.",
+            "Feeling bad about yourself — or that you are a failure or have let yourself or your family down.",
+            "Trouble concentrating on things, such as reading or watching television.",
+            "Moving or speaking slowly, or being fidgety or restless.",
+            "Thoughts of being better off dead or self-harm."
+        ]
 
-# Rosenberg Self-Esteem Scale Test Page
+        for question in questions:
+            scores.append(st.radio(question, ["Not at all", "Several days", "More than half the days", "Nearly every day"], index=0))
+
+        submitted = st.form_submit_button("Next")
+        if submitted:
+            numeric_scores = [scores.index(choice) for choice in scores]
+            store_results("PHQ-9", sum(numeric_scores))
+
 def rosenberg_page():
     st.title("Rosenberg Self-Esteem Scale")
-    st.write("Rate the following statements.")
-    
-    scores = []
-    questions = [
-        "I am satisfied with myself.",
-        "At times, I think I am no good at all.",
-        "I have a number of good qualities.",
-        "I can do things as well as most people.",
-        "I feel I do not have much to be proud of.",
-        "I feel useless at times.",
-        "I feel that I’m a person of worth.",
-        "I wish I could have more respect for myself.",
-        "I feel like a failure.",
-        "I take a positive attitude toward myself."
-    ]
-    
-    for question in questions:
-        scores.append(st.radio(question, ["Strongly Agree", "Agree", "Disagree", "Strongly Disagree"], index=0))
-    
-    if st.button("Next"):
-        numeric_scores = [(1 if i in [1, 4, 5, 7, 8] else 0) + scores.index(choice) for i, choice in enumerate(scores)]
-        store_results("Rosenberg", sum(numeric_scores))
+    with st.form("Rosenberg"):
+        scores = []
+        questions = [
+            "I am satisfied with myself.",
+            "At times, I think I am no good at all.",
+            "I have a number of good qualities.",
+            "I can do things as well as most people.",
+            "I feel I do not have much to be proud of.",
+            "I feel useless at times.",
+            "I feel that I’m a person of worth.",
+            "I wish I could have more respect for myself.",
+            "I feel like a failure.",
+            "I take a positive attitude toward myself."
+        ]
 
-# STAI-5 Test Page
+        for question in questions:
+            scores.append(st.radio(question, ["Strongly Agree", "Agree", "Disagree", "Strongly Disagree"], index=0))
+
+        submitted = st.form_submit_button("Next")
+        if submitted:
+            numeric_scores = [(1 if i in [1, 4, 5, 7, 8] else 0) + scores.index(choice) for i, choice in enumerate(scores)]
+            store_results("Rosenberg", sum(numeric_scores))
+
 def stai5_page():
     st.title("STAI-5: Anxiety Assessment")
-    st.write("Answer the following questions about how you generally feel.")
-    
-    scores = []
-    questions = [
-        "I feel calm.",
-        "I feel secure.",
-        "I feel tense.",
-        "I feel upset.",
-        "I feel worried."
-    ]
-    
-    for question in questions:
-        scores.append(st.radio(question, ["Almost Never", "Sometimes", "Often", "Almost Always"], index=0))
-    
-    if st.button("Next"):
-        numeric_scores = [4 - scores.index(choice) if i in [0, 1] else scores.index(choice) + 1 for i, choice in enumerate(scores)]
-        store_results("STAI-5", sum(numeric_scores))
+    with st.form("STAI-5"):
+        scores = []
+        questions = [
+            "I feel calm.",
+            "I feel secure.",
+            "I feel tense.",
+            "I feel upset.",
+            "I feel worried."
+        ]
 
-# C-SSRS Test Page
+        for question in questions:
+            scores.append(st.radio(question, ["Almost Never", "Sometimes", "Often", "Almost Always"], index=0))
+
+        submitted = st.form_submit_button("Next")
+        if submitted:
+            numeric_scores = [4 - scores.index(choice) if i in [0, 1] else scores.index(choice) + 1 for i, choice in enumerate(scores)]
+            store_results("STAI-5", sum(numeric_scores))
+
 def cssrs_page():
-    st.title("Columbia Suicide Severity Rating Scale (C-SSRS)")
-    
-    st.write("Please answer the following questions truthfully.")
-    
-    responses = {}
-    
-    responses["Q1"] = st.radio(
-        "1. Have you wished you were dead or wished you could go to sleep and not wake up?", 
-        ["No", "Yes"], index=0
-    )
-    
-    responses["Q2"] = st.radio(
-        "2. Have you actually had any thoughts about killing yourself?", 
-        ["No", "Yes"], index=0
-    )
-    
-    if responses["Q2"] == "Yes":
-        responses["Q3"] = st.radio(
-            "3. Have you been thinking about how you might do this?", 
-            ["No", "Yes"], index=0
-        )
-        responses["Q4"] = st.radio(
-            "4. Have you had these thoughts and had some intention of acting on them?", 
-            ["No", "Yes"], index=0
-        )
-        responses["Q5"] = st.radio(
-            "5. Have you started to work out or worked out the details of how to kill yourself? Did you intend to carry out this plan?", 
-            ["No", "Yes"], index=0
-        )
-    
-    responses["Q6"] = st.radio(
-        "6. Have you done anything, started to do anything, or prepared to do anything to end your life?", 
-        ["No", "Yes"], index=0
-    )
-    
-    if responses["Q6"] == "Yes":
-        responses["Q6_recent"] = st.radio(
-            "If yes, was this within the past 3 months?", 
-            ["No", "Yes"], index=0
-        )
-    
-    if st.button("Next"):
-        store_results("C-SSRS", get_cssrs_feedback(responses))
+    st.title("C-SSRS: Columbia Suicide Severity Rating Scale")
+    with st.form("C-SSRS"):
+        responses = {}
+        responses["Q1"] = st.radio("Have you wished you were dead or wished you could go to sleep and not wake up?", ["No", "Yes"], index=0)
+        responses["Q2"] = st.radio("Have you actually had any thoughts about killing yourself?", ["No", "Yes"], index=0)
+        if responses["Q2"] == "Yes":
+            responses["Q3"] = st.radio("Have you been thinking about how you might do this?", ["No", "Yes"], index=0)
+            responses["Q4"] = st.radio("Have you had these thoughts and had some intention of acting on them?", ["No", "Yes"], index=0)
+            responses["Q5"] = st.radio("Have you started to work out or worked out the details of how to kill yourself? Did you intend to carry out this plan?", ["No", "Yes"], index=0)
+        responses["Q6"] = st.radio("Have you done anything, started to do anything, or prepared to do anything to end your life?", ["No", "Yes"], index=0)
+        if responses["Q6"] == "Yes":
+            responses["Q6_recent"] = st.radio("If yes, was this within the past 3 months?", ["No", "Yes"], index=0)
 
-# Feedback and Interpretation Page
+        submitted = st.form_submit_button("Next")
+        if submitted:
+            store_results("C-SSRS", get_cssrs_feedback(responses))
+
 def feedback_page():
     st.title("Feedback and Interpretation")
-    
     results = st.session_state['results']
-    
     for test_name, feedback in results.items():
         st.subheader(f"{test_name} Results")
-        if isinstance(feedback, dict):
-            # Special handling for C-SSRS which provides detailed risk feedback
-            st.write(feedback["feedback"])
-            if "risk_level" in feedback:
-                st.write(f"**Risk Level:** {feedback['risk_level']}")
-        else:
-            # For other tests, display score and feedback
-            st.write(feedback)
+        st.write(feedback)
         st.write("---")
 
-    st.write("**General Encouragement:**")
-    st.write("Seeking support is a sign of strength, not weakness. Professional counseling and talking to trusted individuals can make a significant difference.")
-
-# Page navigation logic
-if st.session_state['page'] == 1:
+if st.session_state.page == 1:
     phq9_page()
-elif st.session_state['page'] == 2:
-    rosenberg_page()
-elif st.session_state['page'] == 3:
-    stai5_page()
-elif st.session_state['page'] == 4:
-    cssrs_page()
-else:
-    feedback_page()
+elif st.session_state.page == 
