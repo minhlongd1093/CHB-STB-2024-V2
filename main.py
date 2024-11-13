@@ -165,4 +165,9 @@ if st.session_state.page == 1:
     phq9_page()
 elif st.session_state.page == 2:
     rosenberg_page()
-elif st.session
+elif st.session_state.page == 3:
+    stai5_page()
+elif st.session_state.page == 4:
+    cssrs_page()
+else:
+    feedback_page()
