@@ -160,6 +160,9 @@ def feedback_page():
         st.write(feedback)
         st.write("---")
 
+# Page navigation logic
 if st.session_state.page == 1:
     phq9_page()
-elif st.session_state.page == 
+elif st.session_state.page == 2:
+    rosenberg_page()
+elif st.session_state.page == 3:
